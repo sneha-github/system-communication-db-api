@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<mule xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core" xmlns:db="http://www.mulesoft.org/schema/mule/db" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:apikit="http://www.mulesoft.org/schema/mule/mule-apikit" xmlns:http="http://www.mulesoft.org/schema/mule/http" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd http://www.mulesoft.org/schema/mule/mule-apikit http://www.mulesoft.org/schema/mule/mule-apikit/current/mule-apikit.xsd 
+http://www.mulesoft.org/schema/mule/db http://www.mulesoft.org/schema/mule/db/current/mule-db.xsd
+http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd">
+    <apikit:config name="system-communication-db-api-config" api="system-communication-db-api.raml" outboundHeadersMapName="outboundHeaders" httpStatusVarName="httpStatus" raml="api/system-communication-db-api.raml"/>
+    <flow name="system-communication-db-api-main">
+        <http:listener xmlns:http="http://www.mulesoft.org/schema/mule/http" config-ref="httpListenerConfig" path="/api/*">
+            <http:response statusCode="#[vars.httpStatus default 200]">
+                <http:headers>#[vars.outboundHeaders default {}]</http:headers>
+            </http:response>
+            <http:error-response statusCode="#[vars.httpStatus default 500]">
+                <http:body>#[payload]</http:body>
+                <http:headers>#[vars.outboundHeaders default {}]</http:headers>
+            </http:error-response>
+        </http:listener>
+        <apikit:router xmlns:apikit="http://www.mulesoft.org/schema/mule/mule-apikit" config-ref="system-communication-db-api-config" />
+          <error-handler ref="globalError_Handler" />
+    </flow>
+    <flow name="system-communication-db-api-console">
+        <http:listener xmlns:http="http://www.mulesoft.org/schema/mule/http" config-ref="httpListenerConfig" path="/console/*">
+            <http:response statusCode="#[vars.httpStatus default 200]">
+                <http:headers>#[vars.outboundHeaders default {}]</http:headers>
+            </http:response>
+            <http:error-response statusCode="#[vars.httpStatus default 500]">
+                <http:body>#[payload]</http:body>
+                <http:headers>#[vars.outboundHeaders default {}]</http:headers>
+            </http:error-response>
+        </http:listener>
+        <apikit:console xmlns:apikit="http://www.mulesoft.org/schema/mule/mule-apikit" config-ref="system-communication-db-api-config" />
+          <error-handler ref="globalError_Handler" />
+    </flow>
+    <flow name="put:\communicationDetails:application\json:system-communication-db-api-config">
+		
+          <flow-ref doc:name="Flow Reference" doc:id="79ade3ca-4c33-4fde-ac92-bd906e0f6000" name="updateCommunicationDetails"/>
+		<error-handler ref="globalError_Handler" />
+    </flow>
+    <flow name="delete:\communicationDetails:system-communication-db-api-config">
+       
+      <flow-ref doc:name="Flow Reference" doc:id="da7ae5a1-04e3-4811-a1a8-fcb5ff51d4c1" name="deleteCommunicationDetails"/>
+		<error-handler ref="globalError_Handler" />
+    </flow>
+    <flow name="get:\communicationDetails:system-communication-db-api-config">
+        
+     <flow-ref doc:name="Flow Reference" doc:id="c16da8af-79c2-47a2-867a-95c79b5f2688" name="getCommunicationDetails"/>
+		<error-handler ref="globalError_Handler" />
+    </flow>
+    <flow name="post:\communicationDetails:application\json:system-communication-db-api-config">
+		
+     <flow-ref doc:name="Flow Reference" doc:id="420d20ae-ef41-469e-b20a-06ec8cb38225" name="insertCommunicationDetails"/>
+		<error-handler ref="globalError_Handler" />
+    </flow>
+</mule>

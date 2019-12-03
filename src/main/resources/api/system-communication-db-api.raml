@@ -1,0 +1,61 @@
+#%RAML 1.0
+title: system-communication-db-api
+
+mediaType:
+  - application/json
+version: 1.0.0
+protocols:
+  - HTTP
+
+types:
+  communicationType: !include datatypes/communicationType.raml
+  errorResponse: !include datatypes/errorResponseType.raml
+  
+traits: 
+ logging: !include traits/logging.raml
+ clientId-enforcement: !include  traits/security.raml
+ errorTraits: !include traits/error-trait.raml 
+
+/communicationDetails:
+  get:
+    displayName: Get contact's address details from the database
+    description: This API will get contact's address details from the database
+    queryParameters:
+      contactId: number
+    responses:
+        200:
+          body:
+            application/json:
+              type: communicationType
+              example: !include example/responseCommunicationDetails.raml
+  post:
+    displayName: Add contact's address details to the database
+    description: This API will add contact's address details to the database
+    body:
+        application/json:
+          type: communicationType
+          example: !include  example/requestCommunicationDetails.raml
+    responses:
+        201:
+          body:
+            application/json:
+              example: !include  example/successResponse.raml
+  put:
+    displayName: Update contact's address details in the database
+    description: This API will Update contact's address details in the database
+    body:
+        application/json:
+          type: communicationType
+          example: !include example/responseCommunicationDetails.raml
+    responses:
+        201:
+          body:
+            application/json:
+                example: !include  example/successResponse.raml
+  delete:
+    displayName: Update contact's identifiation details in the database
+    description: This API will Update contact's identifiation details in the database
+    queryParameters:
+      contactId: number
+    responses:
+       204:
